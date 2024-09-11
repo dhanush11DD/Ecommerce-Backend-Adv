@@ -7,6 +7,7 @@ import { BadRequestException } from "../exceptions/bad-request";
 import { ErrorCode } from "../exceptions/root";
 import { UnprocessableEntity } from "../exceptions/validation-error";
 import { signUpSchema } from "../schema/users";
+import { NotFoundException } from "../exceptions/not-found";
 
 
 export const signUp = async (req:Request , res:Response ,next:NextFunction) =>{
@@ -38,11 +39,11 @@ export const login = async (req:Request,res:Response,next:NextFunction) =>{
 
         if(!user){
                 // next(new BadRequestException("User NotFound !",ErrorCode.USER_NOT_FOUND));
-                throw Error("user not found")
+                throw new NotFoundException('User notfound !',ErrorCode.USER_NOT_FOUND);
         }
 
         if(!compareSync(password,user.password)){
-                throw Error("Incorrect username or password");
+                throw new BadRequestException("Incorrect username or password",ErrorCode.INCORRECT_PASSWORD)
         }
 
         const token = jwt.sign(
@@ -50,4 +51,8 @@ export const login = async (req:Request,res:Response,next:NextFunction) =>{
         );
         res.json({user,token})
         
+}
+
+export const user = async (req:Request,res:Response) => {
+        res.json("this is user logedin");
 }

@@ -13,13 +13,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
 model User {
   id Int @id @default(autoincrement())
   name String
   email String
+  role Role @default(USER)
   password String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  address Address[]
 
   @@map("users")
+}
+
+model Address {
+  id Int @id @default(autoincrement())
+  lineOne String
+  lineTwo String
+  city String
+  pincode String
+  userId Int
+  user User @relation(fields: [userId],references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  name String
+  description String @db.Text
+  price Decimal
+  tags String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("productsss")
 }
